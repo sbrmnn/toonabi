@@ -53,6 +53,7 @@ export function Capture() {
         kanji={character.kanji}
         accentColor={character.accentColor}
         characterName={character.name}
+        characterId={character.id}
         framing="portrait"
         onReady={() => setReadyDelay(true)}
       />
