@@ -21,15 +21,12 @@ Toonabi runs as three Docker containers on a single DigitalOcean droplet:
 
 ## Updating an existing deploy
 
-This is the common case once everything is set up.
-
 ```sh
-# 1. Push your changes
 git push origin ghibli
-
-# 2. On the droplet: pull and re-run the deploy script
-ssh root@159.89.191.35 'cd /opt/toonabi && git fetch --depth 1 origin ghibli && git reset --hard origin/ghibli && bash deploy/digitalocean/deploy.sh'
+bin/remote deploy
 ```
+
+`bin/remote` is a small wrapper that SSHes to the droplet and runs the long docker compose commands for you. Run `bin/remote help` for the full list.
 
 The deploy script rebuilds the changed images, recreates the affected containers, and leaves the SQLite volume intact. There is a brief restart, not zero-downtime — for a side project that is fine.
 
@@ -93,27 +90,26 @@ That builds the two images, starts all three containers, and Caddy will issue a 
 
 ## Common operations
 
-All on the droplet, run from `/opt/toonabi`:
+All run from your laptop in this repo:
 
 ```sh
-# Tail logs (Ctrl-C to stop)
-docker compose --env-file deploy/digitalocean/.env -f docker-compose.digitalocean.yml logs -f
-docker compose --env-file deploy/digitalocean/.env -f docker-compose.digitalocean.yml logs -f backend
+bin/remote deploy            # pull + rebuild + restart
+bin/remote logs              # tail all containers
+bin/remote logs backend      # tail just one
+bin/remote ps                # container status
+bin/remote restart backend   # restart one service
+bin/remote console           # Rails console on the droplet
+bin/remote dbconsole         # Rails dbconsole
+bin/remote shell             # bash on the droplet itself
+bin/remote raw down          # any docker compose subcommand
+bin/remote exec ls /rails    # any docker compose exec against backend
+```
 
-# Container status
-docker compose --env-file deploy/digitalocean/.env -f docker-compose.digitalocean.yml ps
+Set `TOONABI_HOST` / `TOONABI_DIR` / `TOONABI_BRANCH` env vars to point the script at a different server or branch.
 
-# Restart just the backend (e.g. after editing Rails credentials)
-docker compose --env-file deploy/digitalocean/.env -f docker-compose.digitalocean.yml restart backend
+SQLite backup (run on the droplet — `bin/remote shell` first):
 
-# Rails console / dbconsole
-docker compose --env-file deploy/digitalocean/.env -f docker-compose.digitalocean.yml exec backend bin/rails console
-docker compose --env-file deploy/digitalocean/.env -f docker-compose.digitalocean.yml exec backend bin/rails dbconsole
-
-# Stop everything
-docker compose --env-file deploy/digitalocean/.env -f docker-compose.digitalocean.yml down
-
-# SQLite backup (point-in-time copy of the live DB)
+```sh
 docker run --rm -v backend_storage:/data -v $PWD:/backup alpine \
   sh -c "cp /data/production.sqlite3 /backup/toonabi-$(date +%F).sqlite3"
 ```
@@ -123,15 +119,11 @@ docker run --rm -v backend_storage:/data -v $PWD:/backup alpine \
 `config/credentials.yml.enc` is committed to the repo, so edit it locally and let the deploy pick it up:
 
 ```sh
-# Locally
-cd backend
-EDITOR="open -t -W" bin/rails credentials:edit
-
+cd backend && EDITOR="open -t -W" bin/rails credentials:edit
+cd ..
 git commit -am "Update credentials"
 git push origin ghibli
-
-# On the droplet (one-liner)
-ssh root@159.89.191.35 'cd /opt/toonabi && git pull && bash deploy/digitalocean/deploy.sh'
+bin/remote deploy
 ```
 
 The `RAILS_MASTER_KEY` on the droplet stays the same — only the encrypted file changes.
@@ -141,14 +133,14 @@ The `RAILS_MASTER_KEY` on the droplet stays the same — only the encrypted file
 **`/up` returns 502 / "no response"**
 Caddy is up but the backend container isn't healthy yet (boot, migrations, or a crash). Check:
 ```sh
-docker compose --env-file deploy/digitalocean/.env -f docker-compose.digitalocean.yml logs --tail 200 backend
+bin/remote logs backend
 ```
 
 **Cert errors / "your connection is not private"**
 Caddy needs the domain to resolve to the droplet *and* ports 80/443 reachable from the internet. Check:
 ```sh
 dig +short toonabi.com               # → 159.89.191.35
-docker compose ... logs caddy | grep -i "obtained\|error"
+bin/remote logs caddy | grep -i "obtained\|error"
 ```
 
 **Container won't start with "RAILS_MASTER_KEY missing"**
@@ -160,7 +152,7 @@ grep RAILS_MASTER_KEY /opt/toonabi/deploy/digitalocean/.env
 
 **Need to redeploy from a different branch**
 ```sh
-ssh root@159.89.191.35 'cd /opt/toonabi && git fetch origin && git checkout <branch> && git reset --hard origin/<branch> && bash deploy/digitalocean/deploy.sh'
+TOONABI_BRANCH=<branch> bin/remote deploy
 ```
 
 ## Notes

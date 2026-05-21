@@ -1,0 +1,69 @@
+#!/usr/bin/env bash
+# Wrapper for common operations against the production droplet.
+# Usage: bin/remote <subcommand> [args...]
+#
+# Subcommands:
+#   deploy             Pull latest ghibli branch and re-run the docker compose deploy
+#   redeploy           Alias for deploy
+#   logs [service]     Tail container logs (all services, or just `backend` / `frontend` / `caddy`)
+#   ps                 Show container status
+#   restart [service]  Restart all services, or just one
+#   console            Open a Rails console inside the backend container
+#   dbconsole          Open a Rails dbconsole
+#   shell              Open a bash shell on the droplet itself
+#   exec <cmd>...      Run any docker compose exec against the backend container
+#   raw <cmd>...       Run any docker compose subcommand against the stack
+
+set -euo pipefail
+
+: "${TOONABI_HOST:=root@159.89.191.35}"
+: "${TOONABI_DIR:=/opt/toonabi}"
+: "${TOONABI_BRANCH:=ghibli}"
+
+# The full compose command-line on the droplet — keep this in one place.
+COMPOSE='docker compose --env-file deploy/digitalocean/.env -f docker-compose.digitalocean.yml'
+
+run() {
+  ssh -t "$TOONABI_HOST" "cd $TOONABI_DIR && $*"
+}
+
+cmd="${1:-help}"
+shift || true
+
+case "$cmd" in
+  deploy|redeploy)
+    run "git fetch --depth 1 origin $TOONABI_BRANCH && git reset --hard origin/$TOONABI_BRANCH && bash deploy/digitalocean/deploy.sh"
+    ;;
+  logs)
+    run "$COMPOSE logs -f --tail 200 $*"
+    ;;
+  ps)
+    run "$COMPOSE ps"
+    ;;
+  restart)
+    run "$COMPOSE restart $*"
+    ;;
+  console)
+    run "$COMPOSE exec backend bin/rails console"
+    ;;
+  dbconsole)
+    run "$COMPOSE exec backend bin/rails dbconsole"
+    ;;
+  shell)
+    ssh -t "$TOONABI_HOST"
+    ;;
+  exec)
+    run "$COMPOSE exec backend $*"
+    ;;
+  raw)
+    run "$COMPOSE $*"
+    ;;
+  help|--help|-h|"")
+    sed -n '2,/^set -e/p' "$0" | sed 's/^# \{0,1\}//' | grep -v '^set -e'
+    ;;
+  *)
+    echo "Unknown subcommand: $cmd" >&2
+    echo "Run 'bin/remote help' for the list." >&2
+    exit 1
+    ;;
+esac
