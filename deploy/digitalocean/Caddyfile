@@ -1,0 +1,20 @@
+{
+	email {$LETSENCRYPT_EMAIL}
+}
+
+www.{$APP_DOMAIN} {
+	redir https://{$APP_DOMAIN}{uri} permanent
+}
+
+{$APP_DOMAIN} {
+	encode gzip zstd
+
+	@backend path /api/* /up
+	handle @backend {
+		reverse_proxy backend:80
+	}
+
+	handle {
+		reverse_proxy frontend:80
+	}
+}

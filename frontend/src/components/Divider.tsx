@@ -10,7 +10,6 @@ export function Divider({ en, jp }: Props) {
     <div className="my-12 flex items-center gap-4">
       <span className="h-[2px] flex-1 rounded-full bg-gradient-to-r from-transparent via-sage-300 to-sage-400" />
       <div className="flex flex-col items-center text-center leading-tight">
-        <span className="sway text-2xl text-sage-500">✿</span>
         <span
           className="text-3xl text-sage-600"
           style={{ fontFamily: "var(--font-display)" }}

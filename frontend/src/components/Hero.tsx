@@ -11,7 +11,6 @@ export function Hero({ character }: Props) {
     <section className="watercolor-card relative overflow-hidden">
       {/* Featured ribbon — like a hand-drawn label */}
       <div className="absolute left-6 top-6 z-10 flex items-center gap-2 rounded-full bg-rose-300 px-4 py-1.5 shadow-md shadow-rose-300/40">
-        <span className="text-base">✿</span>
         <span
           className="text-lg text-cream-50"
           style={{ fontFamily: "var(--font-display)" }}
@@ -98,14 +97,8 @@ export function Hero({ character }: Props) {
             <span className="absolute -top-3 left-6 rounded-full bg-cream-50 px-2 text-xl text-rose-400">
               ❝
             </span>
-            <JP className="block text-xl font-medium text-text-primary">
-              {character.greeting.jp}
-            </JP>
-            <span
-              className="mt-1 block italic text-text-secondary"
-              style={{ fontFamily: "var(--font-display)", fontSize: "1.05em" }}
-            >
-              "{character.greeting.en}"
+            <span className="block text-xl font-medium text-text-primary">
+              {character.greeting.en}
             </span>
           </div>
 
@@ -116,9 +109,6 @@ export function Hero({ character }: Props) {
           >
             <span>let's talk</span>
             <JP className="text-xs font-semibold not-italic">話そう</JP>
-            <span className="transition-transform group-hover:translate-x-1">
-              ✿
-            </span>
           </Link>
         </div>
       </div>

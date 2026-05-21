@@ -16,7 +16,7 @@ const NATURE_ACCENT: Record<string, string> = {
 }
 
 export function CharacterCard({ character }: Props) {
-  const accent = NATURE_ACCENT[character.id] ?? "✿"
+  const accent = NATURE_ACCENT[character.id] ?? ""
 
   return (
     <Link
@@ -121,12 +121,8 @@ export function CharacterCard({ character }: Props) {
 
         {/* Latest message — soft cloud bubble */}
         <div className="rounded-[20px] rounded-bl-[6px] border border-sky-300 bg-sky-200/40 px-3 py-2.5 text-sm leading-relaxed">
-          <JP className="block text-text-primary">
-            {character.latestMessage.jp}
-          </JP>
-          <span className="block italic text-text-secondary"
-                style={{ fontFamily: "var(--font-display)", fontSize: "0.95em" }}>
-            "{character.latestMessage.en}"
+          <span className="block text-text-primary">
+            {character.latestMessage.en}
           </span>
         </div>
 
@@ -139,7 +135,7 @@ export function CharacterCard({ character }: Props) {
             className="flex items-center gap-1.5 text-lg text-sage-600 transition-transform group-hover:translate-x-1"
             style={{ fontFamily: "var(--font-display)" }}
           >
-            chat ✿
+            chat
           </span>
         </div>
       </div>

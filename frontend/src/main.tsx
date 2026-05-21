@@ -21,6 +21,9 @@ const Capture = lazy(() =>
 const GestureLab = lazy(() =>
   import("./pages/GestureLab").then((m) => ({ default: m.GestureLab })),
 )
+const GestureLabIndex = lazy(() =>
+  import("./pages/GestureLabIndex").then((m) => ({ default: m.GestureLabIndex })),
+)
 
 function ChatLoading() {
   return (
@@ -71,6 +74,14 @@ createRoot(document.getElementById("root")!).render(
             element={
               <Suspense fallback={null}>
                 <Capture />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/lab/gestures"
+            element={
+              <Suspense fallback={<ChatLoading />}>
+                <GestureLabIndex />
               </Suspense>
             }
           />

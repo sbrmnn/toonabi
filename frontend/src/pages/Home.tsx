@@ -11,7 +11,6 @@ export function Home() {
   return (
     <main className="mx-auto max-w-7xl px-4 py-10 md:px-6 md:py-14">
       <div className="mb-10 flex flex-col items-start gap-2">
-        <span className="text-2xl sway">✿</span>
         <JP className="text-xl font-semibold text-rose-400 md:text-2xl">
           キャラクター
         </JP>

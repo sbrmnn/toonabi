@@ -6,6 +6,7 @@ export function Header() {
 
   const navItems = [
     { to: "/", en: "Home", jp: "ホーム" },
+    { to: "/lab/gestures", en: "Lab", jp: "監査" },
     { to: "/about", en: "About", jp: "について" },
   ]
 
@@ -34,7 +35,9 @@ export function Header() {
 
         <nav className="flex items-center gap-1">
           {navItems.map((item) => {
-            const active = pathname === item.to
+            const active =
+              pathname === item.to ||
+              (item.to === "/lab/gestures" && pathname.startsWith("/lab/gestures"))
             return (
               <Link
                 key={item.to}

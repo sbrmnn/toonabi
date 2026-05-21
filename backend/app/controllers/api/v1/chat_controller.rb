@@ -108,7 +108,6 @@ module Api
         - hello: first greeting, opening hello, welcoming the user for the first time
         - humble: modesty, soft gratitude, downplaying praise
         - idle: neutral standing, calm baseline, default fallback when nothing stronger fits
-        - lean_in: leaning closer, interest, confidential emphasis
         - listening_nod: quiet active listening, gentle agreement, soft "mm-hm"
         - nod: simple agreement, yes, acknowledgement
         - oops_fluster: mistake recovery, awkward correction, playful embarrassment

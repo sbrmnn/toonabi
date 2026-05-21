@@ -1,0 +1,60 @@
+services:
+  backend:
+    build:
+      context: ./backend
+    restart: unless-stopped
+    environment:
+      RAILS_ENV: production
+      FRONTEND_ORIGIN: https://${APP_DOMAIN}
+      SOLID_QUEUE_IN_PUMA: "true"
+      RAILS_MASTER_KEY: ${RAILS_MASTER_KEY}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
+      TTS_PROVIDER: ${TTS_PROVIDER:-fish}
+      FISH_AUDIO_API_KEY: ${FISH_AUDIO_API_KEY:-}
+      FISH_AUDIO_MODEL: ${FISH_AUDIO_MODEL:-speech-1.6}
+      ELEVENLABS_API_KEY: ${ELEVENLABS_API_KEY:-}
+      ELEVENLABS_MODEL: ${ELEVENLABS_MODEL:-eleven_multilingual_v2}
+      RAILS_LOG_LEVEL: ${RAILS_LOG_LEVEL:-info}
+      WEB_CONCURRENCY: ${WEB_CONCURRENCY:-1}
+      RAILS_MAX_THREADS: ${RAILS_MAX_THREADS:-3}
+    volumes:
+      - backend_storage:/rails/storage
+    networks:
+      - toonabi
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_VRM_BASE_URL: ${VITE_VRM_BASE_URL:-}
+    restart: unless-stopped
+    networks:
+      - toonabi
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    depends_on:
+      - backend
+      - frontend
+    environment:
+      APP_DOMAIN: ${APP_DOMAIN}
+      LETSENCRYPT_EMAIL: ${LETSENCRYPT_EMAIL}
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./deploy/digitalocean/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    networks:
+      - toonabi
+
+volumes:
+  backend_storage:
+  caddy_data:
+  caddy_config:
+
+networks:
+  toonabi:
+    driver: bridge

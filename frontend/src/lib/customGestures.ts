@@ -141,7 +141,7 @@ export const CUSTOM_GESTURES: CustomGestureDefinition[] = [
   },
   {
     id: "curious_peek",
-    baseAnimation: "lean_in",
+    baseAnimation: "curious",
     label: "Curious Peek",
     description:
       "A cautious lean-in with a tilted head and one hand slightly raised, for curiosity or a soft question.",

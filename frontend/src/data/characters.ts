@@ -19,7 +19,7 @@ export const characters: Character[] = [
     },
     latestMessage: {
       jp: "また話しましょう！",
-      en: "Let's talk again!",
+      en: "Wanna hear a song I've been practicing?",
     },
     affinity: 4,
     online: true,
@@ -44,7 +44,7 @@ export const characters: Character[] = [
     },
     latestMessage: {
       jp: "おやすみなさい。",
-      en: "Good night.",
+      en: "I was just thinking about what you said last time.",
     },
     affinity: 3,
     online: true,
@@ -69,7 +69,7 @@ export const characters: Character[] = [
     },
     latestMessage: {
       jp: "今日は良い日になりそう！",
-      en: "Today's going to be a good day!",
+      en: "Today feels like a dancing-in-the-sunshine kind of day!",
     },
     affinity: 5,
     online: true,
@@ -94,7 +94,7 @@ export const characters: Character[] = [
     },
     latestMessage: {
       jp: "なるほど…興味深いですね。",
-      en: "I see... that's interesting.",
+      en: "Oh? That's a surprisingly clever take.",
     },
     affinity: 3,
     online: true,
@@ -119,7 +119,7 @@ export const characters: Character[] = [
     },
     latestMessage: {
       jp: "気をつけて帰ってね。",
-      en: "Get home safe.",
+      en: "I made tea. Come sit with me for a while.",
     },
     affinity: 4,
     online: true,
@@ -144,7 +144,7 @@ export const characters: Character[] = [
     },
     latestMessage: {
       jp: "もっと教えて！",
-      en: "Tell me more!",
+      en: "Wait wait wait, what happened next?!",
     },
     affinity: 4,
     online: true,
@@ -169,7 +169,7 @@ export const characters: Character[] = [
     },
     latestMessage: {
       jp: "ゆっくりでいいですよ。",
-      en: "Take your time.",
+      en: "I'm here whenever you're ready to talk.",
     },
     affinity: 4,
     online: true,

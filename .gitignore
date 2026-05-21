@@ -34,3 +34,6 @@ backend/coverage/
 
 # VRM model files — large binaries, fetched via bin/setup-assets
 frontend/public/vrm/*.vrm
+
+# Local agent scratch
+.codex-temp/
